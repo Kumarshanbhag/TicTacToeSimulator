@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 echo "Welcome To Tic Tac Toe Game"
 
 declare -a  boardOfGame
@@ -44,6 +44,42 @@ function firstChance() {
 		echo "Player First Turn"
 	else
 		echo "Player First Turn"
+	fi
+	play
+}
+
+#Player Plays game to xelecting Position
+function play() {
+	read -p "Enter Your Position Of Choice:" position
+	if((${boardOfGame[$position]}!=$PLAYER ))
+	then
+		((count++))
+		boardOfGame[$position]=$PLAYER
+		displayBoard
+		winCondition 
+	fi
+	play
+}
+
+#Passes 8 winning position as parameter
+function winCondition() {
+	j=0
+	for((i=1;i<=3;i++))
+	do
+		checkWin $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) 
+		checkWin $(($i)) $(($i+3)) $(($i+6)) 
+		j=$(($j+2)) 
+	done
+	checkWin 1 5 9 
+	checkWin 3 5 7 
+}
+
+#Checks All Winning Condition
+function checkWin() {
+	if [ ${boardOfGame[$1]} == ${boardOfGame[$2]} ] && [ ${boardOfGame[$2]} == ${boardOfGame[$3]} ]
+	then
+		echo "${boardOfGame[$1]} Wins"
+		exit
 	fi
 }
 
