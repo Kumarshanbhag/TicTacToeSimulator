@@ -18,11 +18,23 @@ function displayBoard()
 
 #Resets Board Values 
 function resetBoard() {
-for((i=1;i<=9;i++))
-do
-   boardOfGame[$i]=$i
-done
+	for((i=1;i<=9;i++))
+	do
+   	boardOfGame[$i]=$i
+	done
+}
+
+#Player  Gets Letter Assigned X or O
+function playerLetter()
+{
+   if((RANDOM%2==1))
+   then
+		readonly PLAYER=X
+   else
+      readonly PLAYER=O
+   fi
+   echo "Player Letter = $PLAYER"
 }
 
 resetBoard
-
+playerLetter
