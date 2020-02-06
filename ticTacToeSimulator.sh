@@ -1,7 +1,11 @@
 #!/bin/bash
-echo "Welcome To Tic Tac Toe Game"
+echo "Welcome To Tic Tac Toe Ga
+me"
 
 declare -a  boardOfGame
+
+#Constant
+count=1
 
 #Displays Board
 function displayBoard()
@@ -30,8 +34,10 @@ function playerLetter()
 	if((RANDOM%2==1))
 	then
 		PLAYER=X
+		COMPUTER=O
 	else
 		PLAYER=O
+		COMPUTER=X
 	fi
 	echo "Player Letter = $PLAYER"
 	firstChance
@@ -41,24 +47,41 @@ function playerLetter()
 function firstChance() {
 	if((RANDOM%2==1))
 	then
+		flag=1
 		echo "Player First Turn"
 	else
-		echo "Player First Turn"
+		flag=0
+		echo "Computer First Turn"
 	fi
 	play
 }
 
 #Player Plays game to xelecting Position
 function play() {
-	read -p "Enter Your Position Of Choice:" position
-	if((${boardOfGame[$position]}!=$PLAYER ))
+	if(($flag==1))
 	then
-		((count++))
-		boardOfGame[$position]=$PLAYER
-		displayBoard
-		winCondition 
+		read -p "Enter Your Position Of Choice:" position
+		positionOccupy $position $PLAYER
+	elif(($flag==0))
+	then
+		cposition=$((RANDOM%9+1))
+		positionOccupy $cposition $COMPUTER
 	fi
 	play
+}
+
+#Checks for non occupied position
+function positionOccupy() {
+	local position=$1
+	local letter=$2
+	if((${boardOfGame[$position]}!=$PLAYER && ${boardOfGame[$position]}!=$COMPUTER ))
+	then
+		((count++))
+		boardOfGame[$position]=$letter
+		displayBoard
+		winCondition
+		changeTurn 
+	fi
 }
 
 #Passes 8 winning position as parameter
@@ -73,6 +96,24 @@ function winCondition() {
 	checkWin 1 5 9 
 	checkWin 3 5 7 
 }
+
+function changeTurn() {
+   if(($count<=9))
+   then
+      if((flag==1))
+      then
+         flag=0
+      elif((flag==0))
+      then
+         flag=1
+      fi
+      play
+   else
+      echo "Game Tied"
+      exit
+   fi
+}
+
 
 #Checks All Winning Condition
 function checkWin() {
