@@ -48,4 +48,5 @@ function firstChance() {
 }
 
 resetBoard
+displayBoard
 playerLetter
