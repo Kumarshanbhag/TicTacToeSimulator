@@ -1,6 +1,5 @@
-#!/bin/bash
-echo "Welcome To Tic Tac Toe Ga
-me"
+#!/bin/bash 
+echo "Welcome To Tic Tac Toe Game"
 
 declare -a  boardOfGame
 
@@ -35,28 +34,19 @@ function playerLetter()
 	then
 		PLAYER=X
 		COMPUTER=O
-	else
-		PLAYER=O
-		COMPUTER=X
-	fi
-	echo "Player Letter = $PLAYER"
-	firstChance
-}
-
-#Toss to check who plays first
-function firstChance() {
-	if((RANDOM%2==1))
-	then
 		flag=1
 		echo "Player First Turn"
 	else
+		PLAYER=O
+		COMPUTER=X
 		flag=0
 		echo "Computer First Turn"
 	fi
+	echo "Player Letter = $PLAYER"
 	play
 }
 
-#Player Plays game to xelecting Position
+#Player Plays game to selecting Position
 function play() {
 	if(($flag==1))
 	then
@@ -64,10 +54,46 @@ function play() {
 		positionOccupy $position $PLAYER
 	elif(($flag==0))
 	then
-		cposition=$((RANDOM%9+1))
-		positionOccupy $cposition $COMPUTER
+		smartComputer
+		if(($cposition==0))
+		then
+			cposition=$((RANDOM%9+1))
+			positionOccupy $cposition $COMPUTER
+		fi
 	fi
 	play
+}
+
+#All 24 winning possibilities are passed as parameter 
+function smartComputer() {
+	j=0
+	for((i=1;i<=3;i++))
+	do
+		smartCheck $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) 
+		smartCheck $(($i)) $(($i+3)) $(($i+6)) 
+		j=$(($j+2)) 
+	done
+	smartCheck 1 5 9 
+	smartCheck 3 5 7
+}
+
+#All 24 winning possibilities are checked for computer
+function smartCheck() {
+	if [ ${boardOfGame[$1]} == $COMPUTER ] && [ ${boardOfGame[$2]} == $COMPUTER ]
+	then
+		cposition=$3
+		positionOccupy $cposition $COMPUTER
+	elif [ ${boardOfGame[$1]} == $COMPUTER ] && [ ${boardOfGame[$3]} == $COMPUTER ]
+	then
+		cposition=$2
+		positionOccupy $cposition $COMPUTER
+	elif [ ${boardOfGame[$2]} == $COMPUTER ] && [ ${boardOfGame[$3]} == $COMPUTER ]
+	then
+		cposition=$1
+		positionOccupy $cposition $COMPUTER
+	else
+		cposition=0
+	fi
 }
 
 #Checks for non occupied position
@@ -97,6 +123,7 @@ function winCondition() {
 	checkWin 3 5 7 
 }
 
+#Player And Computer change turn
 function changeTurn() {
    if(($count<=9))
    then
