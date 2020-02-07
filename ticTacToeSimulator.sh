@@ -56,6 +56,7 @@ function play() {
 	then
 		smartComputer $COMPUTER
 		smartComputer $PLAYER
+		smartCorner
 		if(($cposition==0))
 		then
 			cposition=$((RANDOM%9+1))
@@ -98,6 +99,22 @@ function smartCheck() {
 		cposition=0
 	fi
 }
+
+#Checks for available corner
+function smartCorner() {
+	i=1
+	while(($i<=9))
+	do
+		cposition=$i
+		positionOccupy $cposition $COMPUTER
+		if(($i==3))
+		then
+			i=$(($i+2))
+		fi
+		i=$(($i+2))
+	done
+}
+
 
 #Checks for non occupied position
 function positionOccupy() {
