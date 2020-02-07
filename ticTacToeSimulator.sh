@@ -54,7 +54,8 @@ function play() {
 		positionOccupy $position $PLAYER
 	elif(($flag==0))
 	then
-		smartComputer
+		smartComputer $COMPUTER
+		smartComputer $PLAYER
 		if(($cposition==0))
 		then
 			cposition=$((RANDOM%9+1))
@@ -64,30 +65,32 @@ function play() {
 	play
 }
 
-#All 24 winning possibilities are passed as parameter 
+#All 24 winning and Blocking possibilities are passed as parameter 
 function smartComputer() {
+	letter=$1
 	j=0
 	for((i=1;i<=3;i++))
 	do
-		smartCheck $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) 
-		smartCheck $(($i)) $(($i+3)) $(($i+6)) 
+		smartCheck $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) $letter
+		smartCheck $(($i)) $(($i+3)) $(($i+6)) $letter
 		j=$(($j+2)) 
 	done
-	smartCheck 1 5 9 
-	smartCheck 3 5 7
+	smartCheck 1 5 9 $letter 
+	smartCheck 3 5 7 $letter
 }
 
-#All 24 winning possibilities are checked for computer
+#All 24 winning and Blocking possibilities are checked for computer
 function smartCheck() {
-	if [ ${boardOfGame[$1]} == $COMPUTER ] && [ ${boardOfGame[$2]} == $COMPUTER ]
+	letter=$4
+	if [ ${boardOfGame[$1]} == $letter ] && [ ${boardOfGame[$2]} == $letter ]
 	then
 		cposition=$3
 		positionOccupy $cposition $COMPUTER
-	elif [ ${boardOfGame[$1]} == $COMPUTER ] && [ ${boardOfGame[$3]} == $COMPUTER ]
+	elif [ ${boardOfGame[$1]} == $letter ] && [ ${boardOfGame[$3]} == $letter ]
 	then
 		cposition=$2
 		positionOccupy $cposition $COMPUTER
-	elif [ ${boardOfGame[$2]} == $COMPUTER ] && [ ${boardOfGame[$3]} == $COMPUTER ]
+	elif [ ${boardOfGame[$2]} == $letter ] && [ ${boardOfGame[$3]} == $letter ]
 	then
 		cposition=$1
 		positionOccupy $cposition $COMPUTER
@@ -125,20 +128,20 @@ function winCondition() {
 
 #Player And Computer change turn
 function changeTurn() {
-   if(($count<=9))
-   then
-      if((flag==1))
-      then
-         flag=0
-      elif((flag==0))
-      then
-         flag=1
-      fi
-      play
-   else
-      echo "Game Tied"
-      exit
-   fi
+	if(($count<=9))
+	then
+		if((flag==1))
+		then
+			flag=0
+		elif((flag==0))
+		then
+			flag=1
+		fi
+		play
+		else
+			echo "Game Tied"
+		exit
+	fi
 }
 
 
