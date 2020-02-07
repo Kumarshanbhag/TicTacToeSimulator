@@ -57,6 +57,7 @@ function play() {
 		smartComputer $COMPUTER
 		smartComputer $PLAYER
 		smartCorner
+		positionOccupy 5 $COMPUTER
 		if(($cposition==0))
 		then
 			cposition=$((RANDOM%9+1))
@@ -120,13 +121,20 @@ function smartCorner() {
 function positionOccupy() {
 	local position=$1
 	local letter=$2
-	if((${boardOfGame[$position]}!=$PLAYER && ${boardOfGame[$position]}!=$COMPUTER ))
+	if(($position>=1 && $position<=9 ))
 	then
-		((count++))
-		boardOfGame[$position]=$letter
-		displayBoard
-		winCondition
-		changeTurn 
+		if((${boardOfGame[$position]}!=$PLAYER && ${boardOfGame[$position]}!=$COMPUTER ))
+		then
+			((count++))
+			boardOfGame[$position]=$letter
+			displayBoard
+			winCondition
+			changeTurn 
+		else
+			echo "Position Occupied"
+		fi
+	else
+		echo "Invalid Position"
 	fi
 }
 
