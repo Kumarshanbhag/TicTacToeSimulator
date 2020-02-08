@@ -54,31 +54,28 @@ function play() {
 		positionOccupy $position $PLAYER
 	elif(($flag==0))
 	then
-		smartComputer $COMPUTER
-		smartComputer $PLAYER
+		smartComputerAndWinCondition $COMPUTER 'smartCheck'
+		smartComputerAndWinCondition $PLAYER 'smartCheck'
 		smartCorner
 		positionOccupy 5 $COMPUTER
-		if(($cposition==0))
-		then
-			cposition=$((RANDOM%9+1))
-			positionOccupy $cposition $COMPUTER
-		fi
+		smartSide
 	fi
 	play
 }
 
-#All 24 winning and Blocking possibilities are passed as parameter 
-function smartComputer() {
+#All 24 winning and 24 Blocking and 8 Winning possibilities are passed as parameter 
+function smartComputerAndWinCondition() {
 	letter=$1
+	functionName=$2
 	j=0
 	for((i=1;i<=3;i++))
 	do
-		smartCheck $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) $letter
-		smartCheck $(($i)) $(($i+3)) $(($i+6)) $letter
+		$functionName $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) $letter
+		$functionName $(($i)) $(($i+3)) $(($i+6)) $letter
 		j=$(($j+2)) 
 	done
-	smartCheck 1 5 9 $letter 
-	smartCheck 3 5 7 $letter
+	$functionName 1 5 9 $letter 
+	$functionName 3 5 7 $letter
 }
 
 #All 24 winning and Blocking possibilities are checked for computer
@@ -96,8 +93,6 @@ function smartCheck() {
 	then
 		cposition=$1
 		positionOccupy $cposition $COMPUTER
-	else
-		cposition=0
 	fi
 }
 
@@ -106,8 +101,7 @@ function smartCorner() {
 	i=1
 	while(($i<=9))
 	do
-		cposition=$i
-		positionOccupy $cposition $COMPUTER
+		positionOccupy $i $COMPUTER
 		if(($i==3))
 		then
 			i=$(($i+2))
@@ -116,6 +110,13 @@ function smartCorner() {
 	done
 }
 
+#Checks for available side 
+function smartSide() {
+	for(( i=2; i<=8; i=$(($i+2)) ))
+	do
+		positionOccupy $i $COMPUTER
+	done
+}
 
 #Checks for non occupied position
 function positionOccupy() {
@@ -128,7 +129,7 @@ function positionOccupy() {
 			((count++))
 			boardOfGame[$position]=$letter
 			displayBoard
-			winCondition
+			smartComputerAndWinCondition $letter 'checkWin'
 			changeTurn 
 		else
 			echo "Position Occupied"
@@ -136,19 +137,6 @@ function positionOccupy() {
 	else
 		echo "Invalid Position"
 	fi
-}
-
-#Passes 8 winning position as parameter
-function winCondition() {
-	j=0
-	for((i=1;i<=3;i++))
-	do
-		checkWin $(($i+$j)) $(($i+$j+1)) $(($i+$j+2)) 
-		checkWin $(($i)) $(($i+3)) $(($i+6)) 
-		j=$(($j+2)) 
-	done
-	checkWin 1 5 9 
-	checkWin 3 5 7 
 }
 
 #Player And Computer change turn
@@ -168,7 +156,6 @@ function changeTurn() {
 		exit
 	fi
 }
-
 
 #Checks All Winning Condition
 function checkWin() {
