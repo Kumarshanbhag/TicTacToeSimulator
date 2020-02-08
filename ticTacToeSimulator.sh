@@ -9,26 +9,24 @@ count=1
 #Displays Board
 function displayBoard()
 {  
-	i=0;
 	echo "  |---|---|---| "
-	for (( counter=1 ; counter<=3 ; counter++ ))
+	for (( counter=1 ; counter<=9 ; counter=$(($counter+3)) ))
 	do
-		echo "  | ${boardOfGame[$((counter+$i))]} | ${boardOfGame[$((counter+$i+1))]} | ${boardOfGame[$((counter+$i+2))]} | "
+		echo "  | ${boardOfGame[$counter]} | ${boardOfGame[$((counter+1))]} | ${boardOfGame[$((counter+2))]} | "
 		echo "  |---|---|---|"
-		i=$(($i+2))
 	done
 }
 
 #Resets Board Values 
 function resetBoard() {
-	for((i=1;i<=9;i++))
+	for((cell=1;cell<=9;cell++))
 	do
-		boardOfGame[$i]=$i
+		boardOfGame[$cell]=$cell
 	done
 }
 
 #Player Gets Letter Assigned X or O
-function playerLetter()
+function assignSymbol()
 {
 	if((RANDOM%2==1))
 	then
@@ -161,11 +159,18 @@ function changeTurn() {
 function checkWin() {
 	if [ ${boardOfGame[$1]} == ${boardOfGame[$2]} ] && [ ${boardOfGame[$2]} == ${boardOfGame[$3]} ]
 	then
-		echo "${boardOfGame[$1]} Wins"
-		exit
+		if [ ${boardOfGame[$1]} == $PLAYER ]
+		then	
+			echo "Player Wins"
+			exit
+		elif [ ${boardOfGame[$1]} == $COMPUTER ]
+		then
+			echo "Computer Wins"
+			exit
+		fi
 	fi
 }
 
 resetBoard
 displayBoard
-playerLetter
+assignSymbol
